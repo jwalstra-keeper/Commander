@@ -84,7 +84,19 @@ from .pam_saas.remove import PAMActionSaasRemoveCommand
 from .pam_saas.config import PAMActionSaasConfigCommand
 from .pam_saas.update import PAMActionSaasUpdateCommand
 from .tunnel_and_connections import PAMTunnelCommand, PAMConnectionCommand, PAMRbiCommand, PAMSplitCommand
-
+from .remote_management.create_user import RmCreateUserCommand
+from .remote_management.create_role import RmCreateRoleCommand
+from .remote_management.create_group import RmCreateGroupCommand
+from .remote_management.delete_user import RmDeleteUserCommand
+from .remote_management.delete_role import RmDeleteRoleCommand
+from .remote_management.delete_group import RmDeleteGroupCommand
+from .remote_management.get_roles import RmGetRolesCommand
+from .remote_management.get_groups import RmGetGroupsCommand
+from .remote_management.add_user_to_role import RmAddUserToRoleCommand
+from .remote_management.add_user_to_group import RmAddUserToGroupCommand
+from .remote_management.remove_user_from_role import RmRemoveUserFromRoleCommand
+from .remote_management.remove_user_from_group import RmRemoveUserFromGroupCommand
+from .remote_management.run_script import RmRunScriptCommand
 
 # These characters are based on the Vault
 PAM_DEFAULT_SPECIAL_CHAR = '''!@#$%^?();',.=+[]<>{}-_/\\*&:"`~|'''
@@ -199,6 +211,27 @@ class PAMGatewayCommand(GroupCommand):
         # self.register_command('disconnect', PAMDisconnect(), 'Disconnect')
         self.default_verb = 'list'
 
+class RmCommand(GroupCommand):
+
+    def __init__(self):
+        super(RmCommand, self).__init__()
+        self.register_command('group', RmGroupCommand(), 'Group Commands', 'g')
+        self.register_command('role', RmRoleCommand(), 'Role Commands', 'r')
+        self.register_command('user', RmUserCommand(), 'User Commands', 'u')
+        self.register_command('script', RmRunScriptCommand(), 'Run Script', 's')
+
+
+class RmRoleCommand(GroupCommand):
+
+    def __init__(self):
+        super(RmRoleCommand, self).__init__()
+        self.register_command('list', RmGetRolesCommand(), 'Get roles', 'l')
+        self.register_command('create', RmCreateRoleCommand(), 'Create role', 'c')
+        self.register_command('delete', RmDeleteRoleCommand(), 'Delete role', 'd')
+        self.register_command('add-user', RmAddUserToRoleCommand(), 'Add user to role', 'a')
+        self.register_command('remove-user', RmRemoveUserFromRoleCommand(), 'Remove user from role', 'r')
+        self.default_verb = 'list'
+
 
 class PAMConfigurationsCommand(GroupCommand):
 
@@ -290,6 +323,7 @@ class GatewayActionCommand(GroupCommand):
         self.register_command('saas', PAMActionSaasCommand(),
                               'Manage user SaaS rotations.', 'sa')
         self.register_command('debug', PAMDebugCommand(), 'PAM debug information')
+        self.register_command('remote', RmCommand(), 'Remove Management Demo')
 
         # self.register_command('job-list', DRCmdListJobs(), 'List Running jobs')
 
@@ -878,7 +912,7 @@ class PAMCreateRecordRotationCommand(Command):
             else:
                 if len(pwd_complexity_rule_list) > 0:
                     pwd_complexity_rule_list_encrypted = router_helper.encrypt_pwd_complexity(pwd_complexity_rule_list,
-                                                                                              target_record.record_key)
+                                                                                              record.record_key)
                 else:
                     pwd_complexity_rule_list_encrypted = b''
 

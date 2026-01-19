@@ -211,6 +211,7 @@ class PAMGatewayCommand(GroupCommand):
         # self.register_command('disconnect', PAMDisconnect(), 'Disconnect')
         self.default_verb = 'list'
 
+
 class RmCommand(GroupCommand):
 
     def __init__(self):
@@ -221,6 +222,18 @@ class RmCommand(GroupCommand):
         self.register_command('script', RmRunScriptCommand(), 'Run Script', 's')
 
 
+class RmGroupCommand(GroupCommand):
+
+    def __init__(self):
+        super(RmGroupCommand, self).__init__()
+        self.register_command('list', RmGetGroupsCommand(), 'Get groups', 'l')
+        self.register_command('create', RmCreateGroupCommand(), 'Create group', 'c')
+        self.register_command('delete', RmDeleteGroupCommand(), 'Delete group', 'd')
+        self.register_command('add-user', RmAddUserToGroupCommand(), 'Add user to group', 'a')
+        self.register_command('remove-user', RmRemoveUserFromGroupCommand(), 'Remove user from reoup',
+                              'r')
+        self.default_verb = 'list'
+
 class RmRoleCommand(GroupCommand):
 
     def __init__(self):
@@ -230,6 +243,15 @@ class RmRoleCommand(GroupCommand):
         self.register_command('delete', RmDeleteRoleCommand(), 'Delete role', 'd')
         self.register_command('add-user', RmAddUserToRoleCommand(), 'Add user to role', 'a')
         self.register_command('remove-user', RmRemoveUserFromRoleCommand(), 'Remove user from role', 'r')
+        self.default_verb = 'list'
+
+
+class RmUserCommand(GroupCommand):
+
+    def __init__(self):
+        super(RmUserCommand, self).__init__()
+        self.register_command('create', RmCreateUserCommand(), 'Create user', 'c')
+        self.register_command('delete', RmDeleteUserCommand(), 'Delete delete', 'd')
         self.default_verb = 'list'
 
 
